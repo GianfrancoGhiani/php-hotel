@@ -38,6 +38,20 @@ $hotels = [
     ],
 
 ];
+$parking = (isset($_GET['parking']) ? $_GET['parking'] : '');
+$hotelsView = [];
+if (isset($parking) && !empty($parking)) {
+    // echo strval($parking);
+    $parkReq = filter_var($parking, FILTER_VALIDATE_BOOLEAN);
+    foreach ($hotels as $hotel) {
+        if (filter_var($hotel['parking'], FILTER_VALIDATE_BOOLEAN) == filter_var($parking, FILTER_VALIDATE_BOOLEAN)) {
+            $hotelsView[] = $hotel;
+        }
+    }
+} else {
+
+    $hotelsView = $hotels;
+}
 
 ?>
 <!DOCTYPE html>
@@ -56,8 +70,17 @@ $hotels = [
 </head>
 
 <body>
-    <div>
-        <table class="my-5 m-auto">
+    <div class="m-auto  w-50">
+        <form action="index.php" method="GET">
+            <h3 class="d-inline-block">Cerchi un posto con parcheggio?</h3>
+            <select name="parking" id="parking">
+                <option value="" selected>Tutti</option>
+                <option value="true"> si</i></option>
+                <option value="false"> no</i></option>
+            </select>
+            <button type="submit" class="border-0 rounded-pill ">Cerca</button>
+        </form>
+        <table class="my-5 m-auto w-75">
             <thead class="text-center">
                 <tr>
                     <?php foreach ($hotels[0] as $key => $value) { ?>
@@ -69,7 +92,7 @@ $hotels = [
             </thead>
             <tbody>
                 <?php
-                foreach ($hotels as $hotel) { ?>
+                foreach ($hotelsView as $hotel) { ?>
                 <tr>
                     <?php foreach ($hotel as $key => $value) { ?>
                     <td <?php echo 'class=' . (!is_string($hotel[$key]) ? ("text-center") : 'p-2') ?>>
