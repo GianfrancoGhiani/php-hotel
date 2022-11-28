@@ -39,12 +39,24 @@ $hotels = [
 
 ];
 $parking = (isset($_GET['parking']) ? $_GET['parking'] : '');
+$rating = (isset($_GET['rating']) ? $_GET['rating'] : '');
 $hotelsView = [];
-if (isset($parking) && !empty($parking)) {
-    // echo strval($parking);
-    $parkReq = filter_var($parking, FILTER_VALIDATE_BOOLEAN);
+if ((isset($parking) && !empty($parking)) && (isset($rating) && !empty($rating))) {
+    echo $rating;
+    foreach ($hotels as $hotel) {
+        if (filter_var($hotel['parking'], FILTER_VALIDATE_BOOLEAN) == filter_var($parking, FILTER_VALIDATE_BOOLEAN) && ($hotel['vote'] > $rating)) {
+            $hotelsView[] = $hotel;
+        }
+    }
+} elseif ((isset($parking) && !empty($parking))) {
     foreach ($hotels as $hotel) {
         if (filter_var($hotel['parking'], FILTER_VALIDATE_BOOLEAN) == filter_var($parking, FILTER_VALIDATE_BOOLEAN)) {
+            $hotelsView[] = $hotel;
+        }
+    }
+} elseif (isset($rating) && !empty($rating)) {
+    foreach ($hotels as $hotel) {
+        if ($hotel['vote'] > $rating) {
             $hotelsView[] = $hotel;
         }
     }
@@ -70,15 +82,28 @@ if (isset($parking) && !empty($parking)) {
 </head>
 
 <body>
-    <div class="m-auto  w-50">
+    <div class="m-auto  mt-3 w-50">
         <form action="index.php" method="GET">
-            <h3 class="d-inline-block">Cerchi un posto con parcheggio?</h3>
+            <label for="parking">
+                <h5>Cerchi un posto con parcheggio?</h5>
+            </label>
             <select name="parking" id="parking">
-                <option value="" selected>Tutti</option>
+                <option value="">Tutti</option>
                 <option value="true"> si</i></option>
                 <option value="false"> no</i></option>
             </select>
+            <label for="rating">
+                <h5>Voto:</h5>
+            </label>
+            <select name="rating" id="rating">
+                <option value="">Tutti</option>
+                <option value="1">1+</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+                <option value="4">4+</option>
+            </select>
             <button type="submit" class="border-0 rounded-pill ">Cerca</button>
+
         </form>
         <table class="my-5 m-auto w-75">
             <thead class="text-center">
